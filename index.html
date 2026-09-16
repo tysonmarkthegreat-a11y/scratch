@@ -672,31 +672,30 @@
     }
 
     function sendResultToGoogleSheet(code, resultText, winCash) {
-  if (!GOOGLE_SHEET_URL || GOOGLE_SHEET_URL.includes("PASTE_YOUR")) {
-    console.warn("Google Sheet URL is missing!");
-    return;
-  }
+      if (!GOOGLE_SHEET_URL || GOOGLE_SHEET_URL.includes("PASTE_YOUR")) {
+        console.warn("Google Sheet URL is missing!");
+        return;
+      }
 
-  const payload = {
-    cardName: activeCardName,
-    cardPrice: activeTier,
-    code: code,
-    result: resultText,
-    winAmount: winCash
-  };
+      const payload = {
+        cardName: activeCardName,
+        cardPrice: activeTier,
+        code: code,
+        result: resultText,
+        winAmount: winCash
+      };
 
-  // text/plain prevents CORS preflight failure on Apps Script
-  fetch(GOOGLE_SHEET_URL, {
-    method: "POST",
-    mode: "no-cors",
-    headers: {
-      "Content-Type": "text/plain;charset=utf-8"
-    },
-    body: JSON.stringify(payload)
-  })
-  .then(() => console.log("Data dispatched to Google Sheet!"))
-  .catch(err => console.error("Sheet dispatch error: ", err));
-}
+      fetch(GOOGLE_SHEET_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8"
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(() => console.log("Data dispatched to Google Sheet!"))
+      .catch(err => console.error("Sheet dispatch error: ", err));
+    }
 
     function unlockSelectedCard() {
       const input = document.getElementById('unlockInput').value.trim().toUpperCase();
@@ -726,39 +725,56 @@
 
       record.used = true;
 
-      const roll = Math.random() * 100;
-      let title = "";
-      let sub = "";
-      let isWin = false;
+      // ==========================================
+      // EXACT PROBABILITY CONFIGURATION
+      // ==========================================
+      const roll = Math.random() * 100; // 0 to 99.99
       let winCash = 0;
-      let modalHeader = "";
 
-      if (roll < 5) {
-        winCash = Math.floor(Math.random() * (activeMaxPrize - (activeTier + 5))) + (activeTier + 5);
-        title = `YOU WON $${winCash}!`;
-        sub = "Jackpot Prize! Claim on Facebook.";
-        modalHeader = "🔥 JACKPOT WINNER! 🔥";
-        isWin = true;
-      } else if (roll < 15) {
-        winCash = activeTier;
-        title = `YOU WON $${winCash}!`;
-        sub = "Ticket money back! Claim on Facebook.";
-        modalHeader = "🎉 BREAKEVEN WIN! 🎉";
-        isWin = true;
-      } else if (roll < 25) {
-        winCash = Math.max(1, Math.floor(activeTier * 0.5));
-        title = `YOU WON $${winCash}!`;
-        sub = "Partial prize! Claim on Facebook.";
-        modalHeader = "✨ NICE WIN! ✨";
-        isWin = true;
-      } else {
-        winCash = 0;
-        title = "TRY AGAIN";
-        sub = "No win this round. Better luck next time!";
-        isWin = false;
+      if (activeTier === 5) {
+        // 50% chance $2 | 40% chance $3 | 10% chance $4
+        if (roll < 50) {
+          winCash = 2;
+        } else if (roll < 90) { // 50 to 89.99 = 40%
+          winCash = 3;
+        } else { // 90 to 99.99 = 10%
+          winCash = 4;
+        }
+      } else if (activeTier === 10) {
+        // 50% chance $5 | 40% chance $2 | 10% chance $3
+        if (roll < 50) {
+          winCash = 5;
+        } else if (roll < 90) {
+          winCash = 2;
+        } else {
+          winCash = 3;
+        }
+      } else if (activeTier === 15) {
+        // 50% chance $7 | 40% chance $2 | 10% chance $4
+        if (roll < 50) {
+          winCash = 7;
+        } else if (roll < 90) {
+          winCash = 2;
+        } else {
+          winCash = 4;
+        }
+      } else if (activeTier === 25) {
+        // 50% chance $7 | 40% chance $3 | 10% chance $4
+        if (roll < 50) {
+          winCash = 7;
+        } else if (roll < 90) {
+          winCash = 3;
+        } else {
+          winCash = 4;
+        }
       }
 
-      currentCardOutcome = { isWin, winCash, title, modalHeader, isBig: (winCash > activeTier) };
+      const title = `YOU WON $${winCash}!`;
+      const sub = "Prize unlocked! Claim on Facebook.";
+      const modalHeader = "✨ NICE WIN! ✨";
+      const isWin = true;
+
+      currentCardOutcome = { isWin, winCash, title, modalHeader, isBig: false };
 
       sendResultToGoogleSheet(input, title, winCash);
 
@@ -766,7 +782,7 @@
       const sElem = document.getElementById(`res-sub-${activeTier}`);
       tElem.innerText = title;
       sElem.innerText = sub;
-      tElem.style.color = isWin ? 'var(--gold)' : '#8aa4b2';
+      tElem.style.color = 'var(--gold)';
 
       document.getElementById(`lock-${activeTier}`).style.display = 'none';
       setupScratch(activeTier);
