@@ -288,7 +288,6 @@
       <div class="pay-box">
         <div class="pay-row"><span>Payment:</span><strong>Venmo / Chime</strong></div>
         <div class="pay-row"><span>Amount:</span><strong id="mPrice">$5.00</strong></div>
-        <div class="pay-row"><span>Testing Free Code:</span><strong style="color:var(--gold)">PLAYNOVA</strong></div>
       </div>
 
       <!-- Apne Facebook page ka link yahan dalein -->
@@ -298,7 +297,7 @@
 
       <label style="font-size: 11px; color: var(--muted); font-weight: 600;">ENTER UNLOCK CODE:</label>
       <div class="input-row">
-        <input type="text" id="unlockInput" class="input-code" placeholder="e.g. PN5-101 or PLAYNOVA" />
+        <input type="text" id="unlockInput" class="input-code" placeholder="e.g. PN5-101" />
         <button class="unlock-btn" onclick="unlockSelectedCard()">Unlock</button>
       </div>
       <div class="msg-error" id="errorMsg"></div>
@@ -313,11 +312,20 @@
       // Free testing code for any card
 
       // $5 Cards
-      "PN5-101": { tier: 5, used: true },
+      "PN5-100": { tier: 5, used: false },
+      "PN5-101": { tier: 5, used: false },
       "PN5-102": { tier: 5, used: false },
+      "PN5-103": { tier: 5, used: false },
+      "PN5-104": { tier: 5, used: false },
+      "PN5-105": { tier: 5, used: false },
+      
       
       // $10 Cards
+      "PN10-200": { tier: 10, used: false },
       "PN10-201": { tier: 10, used: false },
+      "PN10-202": { tier: 10, used: false },
+      "PN10-203": { tier: 10, used: false },
+      "PN10-204": { tier: 10, used: false },
       
       // $15 Cards
       "PN15-301": { tier: 15, used: false },
