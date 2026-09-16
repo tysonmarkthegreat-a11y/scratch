@@ -31,7 +31,7 @@
     body {
       background: radial-gradient(circle at 50% 10%, #1f0b3d 0%, var(--bg) 80%);
       color: #fff;
-      padding: 0 0 50px;
+      padding: 20px 0 50px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -39,56 +39,48 @@
       overflow-x: hidden;
     }
 
-    /* Live Winning Ticker Bar */
-    .ticker-bar {
-      width: 100%;
-      background: linear-gradient(90deg, #16072d 0%, #290f4e 50%, #16072d 100%);
-      border-bottom: 1px solid #4a1f87;
+    /* Dynamic Live Winner Floating Toast */
+    .live-win-toast {
+      position: fixed;
+      top: 16px;
+      z-index: 90;
+      background: rgba(18, 9, 38, 0.95);
+      border: 1px solid #6b21a8;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 15px rgba(168, 85, 247, 0.4);
+      backdrop-filter: blur(10px);
+      padding: 8px 16px;
+      border-radius: 30px;
       display: flex;
       align-items: center;
-      overflow: hidden;
-      height: 38px;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-    }
-
-    .ticker-label {
-      background: linear-gradient(135deg, var(--gold), #d97706);
-      color: #06020c;
-      font-size: 11px;
-      font-weight: 800;
-      padding: 0 12px;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      white-space: nowrap;
-      z-index: 2;
-      box-shadow: 2px 0 10px rgba(0,0,0,0.5);
-    }
-
-    .ticker-marquee {
-      display: flex;
-      white-space: nowrap;
-      animation: marqueeScroll 25s linear infinite;
-    }
-
-    .ticker-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin-right: 30px;
+      gap: 10px;
       font-size: 12px;
       color: #e9d5ff;
+      transform: translateY(-80px);
+      opacity: 0;
+      transition: transform 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+      pointer-events: none;
+      max-width: 90%;
     }
 
-    .ticker-item strong { color: var(--gold); }
-
-    @keyframes marqueeScroll {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
+    .live-win-toast.show {
+      transform: translateY(0);
+      opacity: 1;
     }
+
+    .toast-badge {
+      background: linear-gradient(135deg, var(--gold), #d97706);
+      color: #070312;
+      font-weight: 900;
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .toast-text strong.name { color: #ffffff; }
+    .toast-text strong.cash { color: var(--gold); text-shadow: 0 0 8px rgba(251, 191, 36, 0.5); }
+    .toast-text span.card-tag { color: #c084fc; font-weight: 600; }
 
     /* Container */
     .container { 
@@ -267,7 +259,7 @@
     }
     .vip-meta { display: flex; justify-content: space-between; font-family: 'Cinzel', serif; font-size: 12px; margin-bottom: 12px; }
 
-    /* Cryptographic SHA-256 Disclaimer Box */
+    /* Cryptographic Disclaimer */
     .crypto-disclaimer-box {
       margin-top: 35px;
       margin-bottom: 20px;
@@ -296,9 +288,6 @@
       color: var(--gold);
       letter-spacing: 0.5px;
       margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
 
     .crypto-content p {
@@ -392,7 +381,7 @@
     .close-btn { position: absolute; top: 14px; right: 14px; background: none; border: none; color: #8aa4b2; font-size: 18px; cursor: pointer; }
     .msg-error { color: #f87171; font-size: 12px; margin-top: 8px; font-weight: 600; }
 
-    /* Win Popup */
+    /* Win Announcement */
     .win-card {
       background: radial-gradient(circle, #2a0e50 0%, #120526 100%);
       border: 2px solid var(--gold);
@@ -433,22 +422,11 @@
 </head>
 <body>
 
-  <!-- Live Winning Bar -->
-  <div class="ticker-bar">
-    <div class="ticker-label">⚡ LIVE WINS</div>
-    <div class="ticker-marquee" id="tickerTrack">
-      <span class="ticker-item">🎉 Josh won <strong>$25.00</strong> on Diamond Rush</span>
-      <span class="ticker-item">🎉 Ashley won <strong>$100.00</strong> on Emerald VIP</span>
-      <span class="ticker-item">🎉 Marie won <strong>$10.00</strong> on Gold Mania</span>
-      <span class="ticker-item">🎉 Archie won <strong>$50.00</strong> on Treasure Hunt</span>
-      <span class="ticker-item">🎉 Marcus won <strong>$15.00</strong> on Diamond Rush</span>
-      <span class="ticker-item">🎉 Sophia won <strong>$200.00</strong> on Emerald VIP</span>
-      <span class="ticker-item">🎉 Josh won <strong>$25.00</strong> on Diamond Rush</span>
-      <span class="ticker-item">🎉 Ashley won <strong>$100.00</strong> on Emerald VIP</span>
-      <span class="ticker-item">🎉 Marie won <strong>$10.00</strong> on Gold Mania</span>
-      <span class="ticker-item">🎉 Archie won <strong>$50.00</strong> on Treasure Hunt</span>
-      <span class="ticker-item">🎉 Marcus won <strong>$15.00</strong> on Diamond Rush</span>
-      <span class="ticker-item">🎉 Sophia won <strong>$200.00</strong> on Emerald VIP</span>
+  <!-- Floating Dynamic Live Win Pop-Up Toast -->
+  <div class="live-win-toast" id="liveToast">
+    <div class="toast-badge">⚡ Live Win</div>
+    <div class="toast-text" id="toastContent">
+      <strong class="name">Marcus</strong> won <strong class="cash">$3.00</strong> on <span class="card-tag">Diamond Rush</span>
     </div>
   </div>
 
@@ -546,7 +524,7 @@
       <button class="buy-btn" onclick="openModal(25, 'Emerald Jackpot', 1000)">Buy Now ($25)</button>
     </div>
 
-    <!-- Cryptographic Algorithm Disclaimer -->
+    <!-- Cryptographic SHA-256 Disclaimer -->
     <div class="crypto-disclaimer-box">
       <div class="crypto-icon">🛡️</div>
       <div class="crypto-content">
@@ -598,7 +576,7 @@
 
     const UNLOCK_CODES = {
       // $5 Cards
-      "PN-101": { tier: 5, used: false },
+      "PN5-100": { tier: 5, used: false },
       
       // $10 Cards
       "PN10-200": { tier: 10, used: false },
@@ -615,6 +593,54 @@
     let activeMaxPrize = 200;
     let currentCardOutcome = null;
 
+    // ==========================================
+    // REALISTIC DYNAMIC LIVE WINNER SIMULATOR
+    // ==========================================
+    const PLAYER_FIRST_NAMES = [
+      "Liam", "Noah", "Mason", "Oliver", "Elijah", "Ethan", "Aiden", "James",
+      "Lucas", "Logan", "Emma", "Olivia", "Ava", "Sophia", "Isabella", "Mia",
+      "Charlotte", "Amelia", "Harper", "Evelyn", "Abigail", "Emily", "Ella",
+      "Jackson", "Mateo", "Jack", "Henry", "Alexander", "Sebastian", "Julian",
+      "Chloe", "Victoria", "Grace", "Zoey", "Hannah", "Layla", "Riley", "Austin"
+    ];
+
+    const GAME_CARDS_DATA = [
+      { name: "Diamond Rush", prizes: [2, 3, 4] },
+      { name: "Gold Mania", prizes: [2, 3, 5] },
+      { name: "Treasure Hunt", prizes: [2, 4, 7] },
+      { name: "Emerald VIP", prizes: [3, 4, 7] }
+    ];
+
+    function showRandomLiveWinToast() {
+      const toast = document.getElementById('liveToast');
+      const content = document.getElementById('toastContent');
+
+      const randomName = PLAYER_FIRST_NAMES[Math.floor(Math.random() * PLAYER_FIRST_NAMES.length)];
+      const lastInitial = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+      const card = GAME_CARDS_DATA[Math.floor(Math.random() * GAME_CARDS_DATA.length)];
+      const prize = card.prizes[Math.floor(Math.random() * card.prizes.length)];
+
+      content.innerHTML = `<strong class="name">${randomName} ${lastInitial}.</strong> won <strong class="cash">$${prize}.00</strong> on <span class="card-tag">${card.name}</span>`;
+
+      // Slide in
+      toast.classList.add('show');
+
+      // Hide after 3.2 seconds
+      setTimeout(() => {
+        toast.classList.remove('show');
+        
+        // Schedule next toast randomly between 4 to 9 seconds
+        const nextDelay = Math.floor(Math.random() * 5000) + 4000;
+        setTimeout(showRandomLiveWinToast, nextDelay);
+      }, 3200);
+    }
+
+    // Start first toast 2 seconds after load
+    window.addEventListener('load', () => {
+      setTimeout(showRandomLiveWinToast, 2000);
+    });
+
+    // Audio Engine
     const AudioEngine = {
       ctx: null,
       init() {
@@ -725,48 +751,26 @@
 
       record.used = true;
 
-      // ==========================================
-      // EXACT PROBABILITY CONFIGURATION
-      // ==========================================
-      const roll = Math.random() * 100; // 0 to 99.99
+      // Probability Configuration
+      const roll = Math.random() * 100;
       let winCash = 0;
 
       if (activeTier === 5) {
-        // 50% chance $2 | 40% chance $3 | 10% chance $4
-        if (roll < 50) {
-          winCash = 2;
-        } else if (roll < 90) { // 50 to 89.99 = 40%
-          winCash = 3;
-        } else { // 90 to 99.99 = 10%
-          winCash = 4;
-        }
+        if (roll < 50) winCash = 2;
+        else if (roll < 90) winCash = 3;
+        else winCash = 4;
       } else if (activeTier === 10) {
-        // 50% chance $5 | 40% chance $2 | 10% chance $3
-        if (roll < 50) {
-          winCash = 5;
-        } else if (roll < 90) {
-          winCash = 2;
-        } else {
-          winCash = 3;
-        }
+        if (roll < 50) winCash = 5;
+        else if (roll < 90) winCash = 2;
+        else winCash = 3;
       } else if (activeTier === 15) {
-        // 50% chance $7 | 40% chance $2 | 10% chance $4
-        if (roll < 50) {
-          winCash = 7;
-        } else if (roll < 90) {
-          winCash = 2;
-        } else {
-          winCash = 4;
-        }
+        if (roll < 50) winCash = 7;
+        else if (roll < 90) winCash = 2;
+        else winCash = 4;
       } else if (activeTier === 25) {
-        // 50% chance $7 | 40% chance $3 | 10% chance $4
-        if (roll < 50) {
-          winCash = 7;
-        } else if (roll < 90) {
-          winCash = 3;
-        } else {
-          winCash = 4;
-        }
+        if (roll < 50) winCash = 7;
+        else if (roll < 90) winCash = 3;
+        else winCash = 4;
       }
 
       const title = `YOU WON $${winCash}!`;
