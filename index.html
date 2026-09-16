@@ -594,7 +594,7 @@
   </div>
 
   <script>
-    const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbyk0J8NEsvoJMCVz94_JtkBv8LfNHqbYA0UyWxqFWK-HMeSoyFo8AAYp1V2KYdrpLwP/exec";
+    const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbweAmp8-UYrx40i9-fLf2xgL3aj3eCnvxPB9YHB1GQgxiBurQHKnnjICaLyAmQ3eghT/exec";
 
     const UNLOCK_CODES = {
       // $5 Cards
@@ -681,23 +681,31 @@
     }
 
     function sendResultToGoogleSheet(code, resultText, winCash) {
-      if (!GOOGLE_SHEET_URL || GOOGLE_SHEET_URL.includes("PASTE_YOUR")) return;
+  if (!GOOGLE_SHEET_URL || GOOGLE_SHEET_URL.includes("PASTE_YOUR")) {
+    console.warn("Google Sheet URL is missing!");
+    return;
+  }
 
-      const payload = {
-        cardName: activeCardName,
-        cardPrice: activeTier,
-        code: code,
-        result: resultText,
-        winAmount: winCash
-      };
+  const payload = {
+    cardName: activeCardName,
+    cardPrice: activeTier,
+    code: code,
+    result: resultText,
+    winAmount: winCash
+  };
 
-      fetch(GOOGLE_SHEET_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      }).catch(err => console.log("Sheet sync err: ", err));
-    }
+  // text/plain prevents CORS preflight failure on Apps Script
+  fetch(GOOGLE_SHEET_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "text/plain;charset=utf-8"
+    },
+    body: JSON.stringify(payload)
+  })
+  .then(() => console.log("Data dispatched to Google Sheet!"))
+  .catch(err => console.error("Sheet dispatch error: ", err));
+}
 
     function unlockSelectedCard() {
       const input = document.getElementById('unlockInput').value.trim().toUpperCase();
