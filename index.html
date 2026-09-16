@@ -576,7 +576,7 @@
 
     const UNLOCK_CODES = {
       // $5 Cards
-      "": { tier: 5, used: false },
+      "MB-100": { tier: 5, used: false },
       
       // $10 Cards
       "PN10-200": { tier: 10, used: false },
@@ -587,6 +587,14 @@
       // $25 VIP Cards
       "PN25-401": { tier: 25, used: false }
     };
+
+    // Storage se used codes uthao
+const usedCodesFromStorage = JSON.parse(localStorage.getItem('pn_used_codes') || '[]');
+usedCodesFromStorage.forEach(code => {
+  if (UNLOCK_CODES[code]) {
+    UNLOCK_CODES[code].used = true;
+  }
+});
 
     let activeTier = 5;
     let activeCardName = 'Diamond Rush';
@@ -749,7 +757,13 @@
         return;
       }
 
+      // Code ko used mark karein aur browser storage mein permanently save karein
       record.used = true;
+      const currentUsed = JSON.parse(localStorage.getItem('pn_used_codes') || '[]');
+      if (!currentUsed.includes(input)) {
+        currentUsed.push(input);
+        localStorage.setItem('pn_used_codes', JSON.stringify(currentUsed));
+      }
 
       // Probability Configuration
       const roll = Math.random() * 100;
